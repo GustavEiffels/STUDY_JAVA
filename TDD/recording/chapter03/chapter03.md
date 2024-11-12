@@ -529,3 +529,172 @@ public class ExpiryDateCalculator {
 
 
 ## 10 코드 정리
+```java
+package study.tdd.tdd.chapter03;
+
+import java.time.LocalDate;
+import java.time.YearMonth;
+
+public class ExpiryDateCalculator {
+
+    public LocalDate calculateExpiryDate(PayData payData){
+        // ** 금액을 나누어서 구독한 개월수를 구함
+        int addedMonths = payData.getPayAmount() / 10_000;
+
+        // ** 처음 구독한 날짜가 존재하는 경우 -> 만료일을 추가적으로 계산
+        if(payData.getFirstBillingDate() != null ) {
+            return expiryDateUsingFirstBillingDate(payData,addedMonths);
+        }
+        // ** 처음 구독한 날짜가 존재하지 않는 경우
+        else{
+            return payData.getBillingDate().plusMonths(addedMonths);
+        }
+    }
+
+    public LocalDate expiryDateUsingFirstBillingDate(PayData payData,int addedMonths){
+        
+        LocalDate candidateExp = payData.getBillingDate().plusMonths(addedMonths);
+
+        // ** 처음 구독한 달의 마지막 날
+        final int dayOffFistBilling = payData.getFirstBillingDate().getDayOfMonth();
+
+        // ** 처음 구독한 달과 만료 달의 마지막 날이 다를 경우 
+        if(dayOffFistBilling != candidateExp.getDayOfMonth()){
+            // ** 구독 만료하는 달의 마지막 날 수 
+            final int dayLenOfCandiMon = YearMonth.from(candidateExp).lengthOfMonth();
+            
+            // ** 처음 구독한 날과 만료하는 달의 날 중 적은 달을 반환 
+            if(dayLenOfCandiMon < dayOffFistBilling ){
+                return candidateExp.withDayOfMonth(dayLenOfCandiMon);
+            }
+            return candidateExp.withDayOfMonth(dayOffFistBilling);
+        }
+        else{
+            return candidateExp;
+        }
+    }
+}
+```
+
+## 10 개월 요금 납부 시 1년 제공 
+- 테스트 코드 추가 
+```java
+    @Test
+    void pay100_000Won_Subscribe_OneYear(){
+        assertExpiryDate(
+                PayData.builder()
+                        .billingDate(LocalDate.of(2019,1,28))
+                        .payAmount(100_000)
+                        .build(),
+                LocalDate.of(2020,1,28));
+    }
+```
+![alt text](image-5.png)
+- 날짜가 안맞는 것을 확인할 수 있다.
+
+### 해결하기 위한 코드 
+```java
+package study.tdd.tdd.chapter03;
+
+import java.time.LocalDate;
+import java.time.YearMonth;
+
+public class ExpiryDateCalculator {
+
+    public LocalDate calculateExpiryDate(PayData payData){
+        // ** 금액을 나누어서 구독한 개월수를 구함
+        int addedMonths = payData.getPayAmount() == 100_000 ? 12 : payData.getPayAmount() / 10_000;
+
+        // ** 처음 구독한 날짜가 존재하는 경우 -> 만료일을 추가적으로 계산
+        if(payData.getFirstBillingDate() != null ) {
+            return expiryDateUsingFirstBillingDate(payData,addedMonths);
+        }
+        // ** 처음 구독한 날짜가 존재하지 않는 경우
+        else{
+            return payData.getBillingDate().plusMonths(addedMonths);
+        }
+    }
+
+    public LocalDate expiryDateUsingFirstBillingDate(PayData payData,int addedMonths){
+
+        LocalDate candidateExp = payData.getBillingDate().plusMonths(addedMonths);
+
+        // ** 처음 구독한 달의 마지막 날
+        final int dayOffFistBilling = payData.getFirstBillingDate().getDayOfMonth();
+
+        // ** 처음 구독한 달과 만료 달의 마지막 날이 다를 경우
+        if(dayOffFistBilling != candidateExp.getDayOfMonth()){
+            // ** 구독 만료하는 달의 마지막 날 수
+            final int dayLenOfCandiMon = YearMonth.from(candidateExp).lengthOfMonth();
+
+            // ** 처음 구독한 날과 만료하는 달의 날 중 적은 달을 반환
+            if(dayLenOfCandiMon < dayOffFistBilling ){
+                return candidateExp.withDayOfMonth(dayLenOfCandiMon);
+            }
+            return candidateExp.withDayOfMonth(dayOffFistBilling);
+        }
+        else{
+            return candidateExp;
+        }
+    }
+}
+
+```
+
+## 테스트 할 목록 정리하기 
+- 미리 목록을 만들어 두는 것도 좋은 방법이다.
+  1. 1만원 납부하면 한달 뒤가 만료일 
+  2. 달의 마지막 날에 납부하면 다음달 마지막 날이 만료일 
+  3. 2만원 납부하면 2개월 뒤가 만료일 
+  4. 3만원 납부하면 3개월 뒤가 만료일
+  5. 10만원을 납부하면 1년뒤가 만료일 
+
+> 여기서 어떤 테스트가 구현이 쉬울지 생각하기
+> 여기서 어떤 테스트가 예외적인지 생각해보기
+
+- 새로운 테스트 사례를 발견
+> 새로운 테스트 사례를 추가하여 진행하기 
+> ( 처음 부터 모든 사례를 정리하려면 시간도 오래 걸릴 뿐더러 쉽지도 않다.)
+
+- 테스트 목록을 적었다고 테스트를 한번에 다 작성하면 안된다.
+> 한번에 작성한 테스트코드가 많으면 구현 초기에 
+> 리팩토링이 자유롭지 못하다.
+>
+> 모든 테스트를 통과시키기 전까지 
+> 계속해서 깨지는 테스트가 존재하므로 개발 리듬을
+> 유지하는 데 도움이 안된다. 
+>
+> 하나의 테스트 코드를 만들고
+> 통과 시키고
+> 리팩토링 하고
+> 다음 테스트 
+>
+> 해당 구조를 반복하는 것이 
+> 짧은 리듬을 반복하고 개발주기가 짧아져서 
+> 집중력도 높아진다. 
+
+- 변경 범위가 매우 큰 리팩토링을 발견하는 경우 
+> 시간이 오래 거리므로 TDD 흐름을 깨기 쉽다.
+> 이때는 테스트를 하는데 집중한다.
+>
+> 대신 다음 할일 목록에 추가해서 진행한다.
+>
+> ( 큰 리팩토링을 발견했을 때 반드시 커밋해놓기 )
+
+
+## 시작하기 힘들때 
+- 검증하는 코드부터 작성 
+> 예를 들어 만료일 계산 기능의 경우
+> 만료일을 검증하는 코드부터 작성
+```java
+    @Test
+    void pay10_000_then_expiryDate_OneMonthLater(){
+        // 처음 작성하는 코드 
+        assertEquals(기대하는 만료일, 실제 만료일 )
+    }
+```
+
+
+## 구현이 막히면 
+- 과감하게 코드를 지우고 미련없이 다시 시작한다.
+  > 어떤 순서로 작성했는지 확인해보고 순서를 바꿔서 다시 진행 

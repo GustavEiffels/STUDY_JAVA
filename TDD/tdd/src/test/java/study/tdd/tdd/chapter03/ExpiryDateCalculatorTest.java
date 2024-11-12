@@ -87,5 +87,15 @@ public class ExpiryDateCalculatorTest {
                         .payAmount(20_000)
                         .build(), LocalDate.of(2019,4,30));
     }
+
+    @Test
+    void pay100_000Won_Subscribe_OneYear(){
+        assertExpiryDate(
+                PayData.builder()
+                        .billingDate(LocalDate.of(2019,1,28))
+                        .payAmount(100_000)
+                        .build(),
+                LocalDate.of(2020,1,28));
+    }
 }
 
