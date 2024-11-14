@@ -2,7 +2,7 @@ package tdd.study.order_service.product;
 
 import org.springframework.util.Assert;
 
-class Product {
+public class Product {
     public Long getId() {
         return id;
     }

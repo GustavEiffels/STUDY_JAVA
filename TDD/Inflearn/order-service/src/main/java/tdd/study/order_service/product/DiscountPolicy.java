@@ -1,5 +1,5 @@
 package tdd.study.order_service.product;
 
-enum DiscountPolicy {
+public enum DiscountPolicy {
     NONE
 }

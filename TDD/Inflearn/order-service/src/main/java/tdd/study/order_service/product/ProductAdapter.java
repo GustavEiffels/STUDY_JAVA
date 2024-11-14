@@ -1,10 +1,13 @@
 package tdd.study.order_service.product;
 
-class ProductAdapter implements ProductPort {
+import org.springframework.stereotype.Component;
+
+@Component
+public class ProductAdapter implements ProductPort {
 
     private final ProductRepository productRepository;
 
-    ProductAdapter(ProductRepository productRepository) {
+    public ProductAdapter(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 
