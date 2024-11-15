@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: sfdc-service-demo
+
+sftp:
+  host: localhost
+  port: 2222
+  user: xiuk
+  password: ppppp
