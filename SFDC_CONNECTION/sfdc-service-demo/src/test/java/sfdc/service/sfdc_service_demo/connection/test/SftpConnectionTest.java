@@ -1,11 +1,14 @@
-package sfdc.service.sfdc_service_demo.connection;
+package sfdc.service.sfdc_service_demo.connection.test;
 
 import com.jcraft.jsch.*;
 import org.junit.jupiter.api.Test;
+import sfdc.service.sfdc_service_demo.connection.CustomSftpException;
+import sfdc.service.sfdc_service_demo.connection.SFTP_STATUS;
+import sfdc.service.sfdc_service_demo.connection.SftpCredentials;
+import sfdc.service.sfdc_service_demo.connection.SftpService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.springframework.util.StringUtils.hasText;
 
 public class SftpConnectionTest {
 
@@ -29,7 +32,7 @@ public class SftpConnectionTest {
     }
 
     private SFTP_STATUS  common_connectTest(String host,int port, String username, String password){
-        SftpService service = new SftpService(this);
+        SftpService service = new SftpService();
         try{
             ChannelSftp channelSftp =  service.createChannel(new SftpCredentials(host,port,username,password));
             return SFTP_STATUS.CONNECT;

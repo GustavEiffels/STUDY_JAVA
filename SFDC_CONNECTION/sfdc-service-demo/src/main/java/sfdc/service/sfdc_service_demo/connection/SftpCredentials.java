@@ -1,7 +1,15 @@
 package sfdc.service.sfdc_service_demo.connection;
 
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
+@Getter
+@Setter
+@Builder
+@Component
 public class SftpCredentials {
     private String host;
     private int port;
@@ -15,38 +23,6 @@ public class SftpCredentials {
         this.host = host;
         this.port = port;
         this.username = username;
-        this.password = password;
-    }
-
-    public String getHost() {
-        return host;
-    }
-
-    public void setHost(String host) {
-        this.host = host;
-    }
-
-    public int getPort() {
-        return port;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
-    }
-
-    public String getUserName() {
-        return username;
-    }
-
-    public void setUserName(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
         this.password = password;
     }
 }
