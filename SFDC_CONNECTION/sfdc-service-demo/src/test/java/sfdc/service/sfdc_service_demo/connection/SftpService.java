@@ -1,14 +1,18 @@
 package sfdc.service.sfdc_service_demo.connection;
 
 import com.jcraft.jsch.*;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import sfdc.service.sfdc_service_demo.connection.test.SftpConnectionTest;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.UUID;
 
+import static org.springframework.util.StringUtils.*;
 import static org.springframework.util.StringUtils.hasText;
 
 public class SftpService {
@@ -79,16 +83,31 @@ public class SftpService {
 
     public String upload(SftpCredentials credentials, String path, MultipartFile file) {
 
-        if(file == null)                                                    throw new CustomSftpException(SFTP_STATUS.NOT_FOUND_FILE);
-        if(!isValidType(Objects.requireNonNull(file.getContentType())))     throw new CustomSftpException(SFTP_STATUS.ONLY_IMAGE);
+        // ** file 이 존재하는지 확인
+        if(file == null)
+            throw new CustomSftpException(SFTP_STATUS.NOT_FOUND_FILE);
+
+        // ** file 확장자 추출
+        String extension = getFileExtension(Objects.requireNonNull(file.getOriginalFilename()));
+
+        // ** file type 및 확장자 확인
+        if(!isValidType(Objects.requireNonNull(file.getContentType()),extension))
+            throw new CustomSftpException(SFTP_STATUS.ONLY_IMAGE);
 
 
         ChannelSftp channel = createChannel(credentials);
-        if( !isValidPath(channel,path) ) throw new CustomSftpException(SFTP_STATUS.NOT_VALID_PATH);
+
+        // ** Sanitized Path
+        String sanitizedPath = generateSanitizedPath(path);
+
+        if( !isValidPath(channel,sanitizedPath) ) throw new CustomSftpException(SFTP_STATUS.NOT_VALID_PATH);
+
+
+        String newFilePath = generateNewFilePath(sanitizedPath,file.getOriginalFilename(),extension);
 
         // ** upload
-        try(FileInputStream fis = new FileInputStream(path)){
-            channel.put(fis,path);
+        try(InputStream inputStream = file.getInputStream()){
+            channel.put(inputStream,newFilePath);
         }
         catch (IOException ioE){
             throw new CustomSftpException(SFTP_STATUS.IOE,ioE.getLocalizedMessage());
@@ -96,14 +115,47 @@ public class SftpService {
         catch (SftpException sftpE){
             throw new CustomSftpException(SFTP_STATUS.SFTP_ERROR,sftpE.getLocalizedMessage());
         }
-
-        return "test";
+        finally {
+            disconnect();
+        }
+        return newFilePath;
     }
+    private String getFileExtension(String fileOriginalName){
+        String extension = fileOriginalName.substring(
+                fileOriginalName.lastIndexOf(".") + 1).toLowerCase();
 
-    private boolean isValidType(String contentType) {
-        return contentType.equals("image/jpeg") || contentType.equals("image/png");
+        if(!extension.equals("jpg")&&!extension.equals("jpeg")&&!extension.equals("png")){
+            throw new CustomSftpException(SFTP_STATUS.NOT_ALLOW_FILE_TYPE);
+        }
+        return extension;
     }
+    private String generateSanitizedPath(String path) {
+        if (path == null || path.trim().isEmpty()) {
+            return "/";
+        }
+        if(path.equals("/")){
+            return path;
+        }
+        return path.replaceAll("/{2,}", "/").replaceAll("/$", "");
+    }
+    private String generateNewFilePath(String path, String originalFilename,String extension) {
+        // ** convert file name
+        if( originalFilename == null || !originalFilename.contains(".") ){
+            throw new CustomSftpException(SFTP_STATUS.NOT_ALLOW_FILE_TYPE);
+        }
 
+        // ** extract Extension of the file
+        // +1 => Available Find Hidden File
+        if(!hasText(extension)) throw new CustomSftpException(SFTP_STATUS.NOT_ALLOW_FILE_TYPE);
+        String newFileName = UUID.randomUUID()+"."+extension;
+
+        return path+newFileName;
+    }
+    private boolean isValidType(String contentType,String extensionName) {
+
+        return (contentType.equals("image/jpeg") && extensionName.equals("jpg")) ||
+                (contentType.equals("image/png") && extensionName.equals("png"));
+    }
     private boolean isValidPath(ChannelSftp channel, String path){
         try{
             channel.ls(path);
@@ -111,6 +163,22 @@ public class SftpService {
         }
         catch (SftpException e){
             return false;
+        }
+    }
+
+    // description: disconnect sftp session, channel
+    private void disconnect(){
+        Session session     = sessionHolder.get();
+        ChannelSftp channel = channelHolder.get();
+
+        if(channel!=null&&channel.isConnected()){
+            channel.disconnect();
+            channelHolder.remove();
+        }
+
+        if(session!=null&&session.isConnected()){
+            session.disconnect();
+            sessionHolder.remove();
         }
     }
 }
