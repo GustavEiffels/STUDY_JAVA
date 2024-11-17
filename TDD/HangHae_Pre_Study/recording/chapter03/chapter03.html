@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>&#xcd08;&#xae30; &#xd14c;&#xc2a4;&#xd2b8;&#xb294; &#xac04;&#xb2e8;&#xd55c; &#xc870;&#xac74;&#xbd80;&#xd130; &#xd14c;&#xc2a4;&#xd2b8;</title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only],
+.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
+.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+</style>
+            
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+        
+        </head>
+        <body class="vscode-body vscode-light">
+            <h3 id="초기-테스트는-간단한-조건부터-테스트">초기 테스트는 간단한 조건부터 테스트</h3>
+<ul>
+<li>다양한 조합을 검사하는 복잡한 상황을 테스트로 추가하면</li>
+<li>테스트를 통과 시키기 위해 한번에 구현해야할 코드가 많아진다.</li>
+</ul>
+<blockquote>
+<p>한번에 많은 코드를 작성하면 많은 버그를 만들어낼 우려가 있다.</p>
+</blockquote>
+<h3 id="구현하기-쉬운-테스트-부터-시작하기">구현하기 쉬운 테스트 부터 시작하기</h3>
+<ul>
+<li>빠르게 테스트를 통과 시킬 수 있다.</li>
+<li>디버깅할 때 유리하다. ( 머리속에 남아서 어떤 코드였는지 파악하기 쉽다.)</li>
+</ul>
+<h3 id="예외-상황을-먼저-테스트해야하는-이유">예외 상황을 먼저 테스트해야하는 이유</h3>
+<blockquote>
+<p>예외 상황은 if-else 구조가 많이 발생하는데
+이후에 이 코드를 구현하면 코드 구조를 뒤집거나, 예외 상황을 처리하기 위해
+조건문을 중복으로 추가해야한다.</p>
+</blockquote>
+<ul>
+<li>초반에 if-else 구조를 미리 구현되어 있으면, 후에 구조가 덜 바뀐다.</li>
+<li>예외상황을 처리하지 않아 발생하는 버그도 줄어든다.</li>
+</ul>
+<h3 id="완급-조절">완급 조절</h3>
+<ul>
+<li>한번에 얼마만큼의 코드를 작성할 것인 가가 중요하다.</li>
+</ul>
+<blockquote>
+<ol>
+<li>정해진 값 리턴</li>
+<li>값 비교를 통해 정해진 값 리턴</li>
+<li>다양한 테스트를 추가하며 구현을 일반화 한다.</li>
+</ol>
+</blockquote>
+<ul>
+<li>몇 차례 상수를 사용하여 구현하는 것이 밑거름이 되어</li>
+<li>만들어야할 코드가 잘 떠오르지 않을때 점진정으로 구현을 진행할 수 있다.</li>
+</ul>
+<h3 id="지속적인-리팩토링">지속적인 리팩토링</h3>
+<ul>
+<li>TDD 진행 중 지속적인 리팩토링으로 코드의 가독성이 좋아진다.</li>
+</ul>
+<h1 id="매달-비용을-지불해야-사용할-수-있는-서비스">매달 비용을 지불해야 사용할 수 있는 서비스</h1>
+<ul>
+<li>서비는 다음 규칙에 따라 만료일을 결정한다.
+<ol>
+<li>서스를 사용하려면 매달 1만원 선불 납부, 납ㅜ일 기준 한달 뒤가 서비스 만료일</li>
+<li>2개월 이상 요금 납부 할 수 있음</li>
+<li>10만원 납부시 서비스 1년 제공</li>
+</ol>
+</li>
+</ul>
+<h2 id="1-쉬운--것-부터-테스트">1. 쉬운  것 부터 테스트</h2>
+<ul>
+<li>구하기 쉬운 것 부터 테트</li>
+<li>예외 상황을 먼저 테스트</li>
+</ul>
+<blockquote>
+<p>만원을 납부하면 한달 뒤 같은 날을 만료일로 계산하는 것이 가장 쉬울 거라고 생각</p>
+</blockquote>
+<pre><code class="language-java"><span class="hljs-keyword">package</span> study.tdd.tdd.chapter03;
+
+<span class="hljs-keyword">import</span> org.junit.jupiter.api.Test;
+
+<span class="hljs-keyword">import</span> java.time.LocalDate;
+
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ExpiryDateCalculatorTest</span> {
+
+    <span class="hljs-meta">@Test</span>
+    <span class="hljs-keyword">void</span>  만원_납부하면_한달 _뒤가_만료일이_됨(){
+        <span class="hljs-type">LocalDate</span> <span class="hljs-variable">billingDate</span> <span class="hljs-operator">=</span> LocalDate.of(<span class="hljs-number">2019</span>,<span class="hljs-number">3</span>,<span class="hljs-number">1</span>);
+        <span class="hljs-type">int</span> <span class="hljs-variable">payAmount</span> <span class="hljs-operator">=</span> <span class="hljs-number">10_000</span>;
+
+        <span class="hljs-type">ExpiryDateCalculator</span> <span class="hljs-variable">cal</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ExpiryDateCalculator</span>();
+        <span class="hljs-type">LocalDate</span> <span class="hljs-variable">expiryDate</span> <span class="hljs-operator">=</span> cal.calculateExpiryDate(BillingDate, payAmount);
+
+        assertEquals(LocalDate.of(<span class="hljs-number">2019</span>,<span class="hljs-number">4</span>,<span class="hljs-number">1</span>),expiryDate);
+    }
+}
+</code></pre>
+<p><img src="file:////Users/maxxing/Documents/GIT-HUB/STUDY_JAVA/STUDY_JAVA/TDD/HangHae_Pre_Study/recording/chapter03/image.png" alt="미리 테스트 코드 부터 작성"></p>
+<h3 id="구현-로직">구현 로직</h3>
+<pre><code class="language-java">    <span class="hljs-keyword">package</span> study.tdd.tdd.chapter03;
+
+    <span class="hljs-keyword">import</span> java.time.LocalDate;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ExpiryDateCalculator</span> {
+
+        <span class="hljs-keyword">public</span> LocalDate <span class="hljs-title function_">calculateExpiryDate</span><span class="hljs-params">(LocalDate billingDate,<span class="hljs-type">int</span> payAmount)</span>{
+            <span class="hljs-keyword">return</span> LocalDate.of(<span class="hljs-number">2019</span>,<span class="hljs-number">4</span>,<span class="hljs-number">1</span>);
+        }
+    }
+</code></pre>
+<h2 id="2-예시를-추가">2. 예시를 추가</h2>
+<ul>
+<li>동일한 예시를 추가하여 일반화에 도움을 준다. ( 상수를 사용 )</li>
+</ul>
+<h3 id="test-코드">TEST 코드</h3>
+<pre><code class="language-java">    <span class="hljs-meta">@Test</span>
+    <span class="hljs-keyword">void</span>  <span class="hljs-title function_">pay_TenThousand_ExpiryDate_After_One_Month</span><span class="hljs-params">()</span>{
+        <span class="hljs-type">LocalDate</span> <span class="hljs-variable">billingDate</span> <span class="hljs-operator">=</span> LocalDate.of(<span class="hljs-number">2019</span>,<span class="hljs-number">3</span>,<span class="hljs-number">1</span>);
+        <span class="hljs-type">int</span> <span class="hljs-variable">payAmount</span> <span class="hljs-operator">=</span> <span class="hljs-number">10_000</span>;
+
+        <span class="hljs-type">ExpiryDateCalculator</span> <span class="hljs-variable">cal</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ExpiryDateCalculator</span>();
+        <span class="hljs-type">LocalDate</span> <span class="hljs-variable">expiryDate</span> <span class="hljs-operator">=</span> cal.calculateExpiryDate(billingDate, payAmount);
+
+        assertEquals(LocalDate.of(<span class="hljs-number">2019</span>,<span class="hljs-number">4</span>,<span class="hljs-number">1</span>),expiryDate);
+
+        <span class="hljs-comment">// ** Second Case</span>
+        <span class="hljs-type">LocalDate</span> <span class="hljs-variable">billingDate2</span> <span class="hljs-operator">=</span> LocalDate.of(<span class="hljs-number">2019</span>,<span class="hljs-number">5</span>,<span class="hljs-number">5</span>);
+        <span class="hljs-type">int</span> <span class="hljs-variable">payAmount2</span> <span class="hljs-operator">=</span> <span class="hljs-number">10_000</span>;
+        <span class="hljs-type">LocalDate</span> <span class="hljs-variable">expiryDate2</span> <span class="hljs-operator">=</span> cal.calculateExpiryDate(billingDate2, payAmount2);
+        assertEquals(LocalDate.of(<span class="hljs-number">2019</span>,<span class="hljs-number">6</span>,<span class="hljs-number">5</span>),expiryDate2);
+    }
+</code></pre>
+<h3 id="method">METHOD</h3>
+<pre><code class="language-java">    <span class="hljs-keyword">public</span> LocalDate <span class="hljs-title function_">calculateExpiryDate</span><span class="hljs-params">(LocalDate billingDate,<span class="hljs-type">int</span> payAmount)</span>{
+        <span class="hljs-keyword">if</span>(billingDate.equals(LocalDate.of(<span class="hljs-number">2019</span>,<span class="hljs-number">3</span>,<span class="hljs-number">1</span>))){
+            <span class="hljs-keyword">return</span> LocalDate.of(<span class="hljs-number">2019</span>,<span class="hljs-number">4</span>,<span class="hljs-number">1</span>);
+        }
+        <span class="hljs-keyword">return</span> LocalDate.of(<span class="hljs-number">2019</span>,<span class="hljs-number">6</span>,<span class="hljs-number">5</span>);
+    }
+</code></pre>
+<ul>
+<li>바로 일반화를 적용한다 ( API 를 사용하여 일반화에 적용)</li>
+</ul>
+<h3 id="method-1">METHOD</h3>
+<pre><code class="language-java">    <span class="hljs-keyword">public</span> LocalDate <span class="hljs-title function_">calculateExpiryDate</span><span class="hljs-params">(LocalDate billingDate,<span class="hljs-type">int</span> payAmount)</span>{
+        <span class="hljs-keyword">return</span> billingDate.plusMonths(<span class="hljs-number">1</span>);
+    }
+</code></pre>
+<p><img src="file:////Users/maxxing/Documents/GIT-HUB/STUDY_JAVA/STUDY_JAVA/TDD/HangHae_Pre_Study/recording/chapter03/image-1.png" alt="alt text"></p>
+<h3 id="3테스트-코드의-중복-제거">3.테스트 코드의 중복 제거</h3>
+<blockquote>
+<p>테스트 코드의 중복 제거는 고민해야한다</p>
+<ul>
+<li>각 테스트 메서드는 스스로 무엇을 테스트 하는지 명확히 설명할 수 있어야하기 때문에</li>
+<li>테스트 코드의 중복제거는 신중해야한다.</li>
+</ul>
+</blockquote>
+<pre><code class="language-java">    <span class="hljs-comment">// ** 중복 제거를 위한 코드</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">assertExpiryDate</span><span class="hljs-params">(LocalDate billingDate, <span class="hljs-type">int</span> payAmount,LocalDate expectedExpiryDate)</span>{
+        <span class="hljs-type">ExpiryDateCalculator</span> <span class="hljs-variable">cal</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ExpiryDateCalculator</span>();
+        <span class="hljs-type">LocalDate</span> <span class="hljs-variable">realExpiryDate</span> <span class="hljs-operator">=</span> cal.calculateExpiryDate(billingDate,payAmount);
+        assertEquals(expectedExpiryDate,realExpiryDate);
+    }
+
+    <span class="hljs-meta">@Test</span>
+    <span class="hljs-keyword">void</span>  <span class="hljs-title function_">pay_TenThousand_ExpiryDate_After_One_Month</span><span class="hljs-params">()</span>{
+        assertExpiryDate(
+                LocalDate.of(<span class="hljs-number">2019</span>,<span class="hljs-number">3</span>,<span class="hljs-number">1</span>),
+                <span class="hljs-number">10_000</span>,
+                LocalDate.of(<span class="hljs-number">2019</span>,<span class="hljs-number">4</span>,<span class="hljs-number">1</span>));
+
+        assertExpiryDate(
+                LocalDate.of(<span class="hljs-number">2019</span>,<span class="hljs-number">5</span>,<span class="hljs-number">5</span>),
+                <span class="hljs-number">10_000</span>,
+                LocalDate.of(<span class="hljs-number">2019</span>,<span class="hljs-number">6</span>,<span class="hljs-number">5</span>));
+    }
+</code></pre>
+<h3 id="4-예외-상황-처리---1">4. 예외 상황 처리 - 1</h3>
+<ul>
+<li>예외 상황 예시</li>
+</ul>
+<blockquote>
+<p>납부일이 2019-01-31 이고 납부 액이 1만원이면 만료일은 2019-02-28
+납부일이 2019-05-31 이고 압부 액이 1만원이면 만료일은 2019-06-30
+납부일이 2020-01-31 이고 압부 액이 1만원이면 만료일은 2019-20-29</p>
+</blockquote>
+<pre><code class="language-java">    <span class="hljs-meta">@Test</span>
+    <span class="hljs-keyword">void</span> <span class="hljs-title function_">pay_date_isNotSame_with_AfterMonth_ExpiryDate</span><span class="hljs-params">()</span>{
+        assertExpiryDate(
+                LocalDate.of(<span class="hljs-number">2019</span>,<span class="hljs-number">1</span>,<span class="hljs-number">31</span>),
+                <span class="hljs-number">10_000</span>,
+                LocalDate.of(<span class="hljs-number">2019</span>,<span class="hljs-number">2</span>,<span class="hljs-number">28</span>));
+        assertExpiryDate(
+                LocalDate.of(<span class="hljs-number">2019</span>,<span class="hljs-number">5</span>,<span class="hljs-number">31</span>),
+                <span class="hljs-number">10_000</span>,
+                LocalDate.of(<span class="hljs-number">2019</span>,<span class="hljs-number">6</span>,<span class="hljs-number">30</span>));
+    }
+</code></pre>
+<p><img src="file:////Users/maxxing/Documents/GIT-HUB/STUDY_JAVA/STUDY_JAVA/TDD/HangHae_Pre_Study/recording/chapter03/image-2.png" alt="alt text">
+다행이도 해당 예외에 대해서 API 가 잘 처리를 해주는 것 같다.</p>
+<h3 id="5-에외-상황-처리---2">5. 에외 상황 처리 - 2</h3>
+<ul>
+<li>예외 상황
+<blockquote>
+<p>2만원 지불 시 만료일이 두달 뒤가 된다
+3만원 지불 시 마뇨일이 세달 뒤가 된다.
+납부일이 2019-01-31 이고 만료되는 2019-02-28에 1만원 납부 시 다음 납부 일은 2019-03-31 이다.
+납부일이 2019-01-30 이고 만료되는 2019-02-28에 1만원 납부 시 다음 납부 일은 2019-03-30 이다.
+납부일이 2019-05-31 이고 만료되는 2019-06-30에 1만원 납부 시 다음 납부 일은 2019-07-31 이다.</p>
+</blockquote>
+</li>
+<li>해당 테스트를 진행하려면 첫 납부일의 데이터가 필요하다.</li>
+</ul>
+<h3 id="6-리팩토링">6. 리팩토링</h3>
+<ul>
+<li>고민해야할 사항</li>
+</ul>
+<blockquote>
+<ol>
+<li>method 에 첫 납부일 파라미터 추가</li>
+<li>첫 납부일 데이터를 담은 객체를 method 에 전달
+-&gt; 파라미터 개수는 적을 수록 가독성과 유지보수에 좋음, 3개 이상이면 객체로 바꾸는 것을 고려야한다.
+=&gt; PayData 라는 Object 추가 생성</li>
+</ol>
+</blockquote>
+<pre><code class="language-java"><span class="hljs-keyword">package</span> study.tdd.tdd.chapter03;
+
+<span class="hljs-keyword">import</span> java.time.LocalDate;
+
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">PayData</span> {
+    <span class="hljs-keyword">private</span> LocalDate billingDate;
+    <span class="hljs-keyword">private</span> <span class="hljs-type">int</span> payAmount;
+
+    <span class="hljs-keyword">private</span> <span class="hljs-title function_">PayData</span><span class="hljs-params">()</span>{}
+
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">PayData</span><span class="hljs-params">(LocalDate billingDate, <span class="hljs-type">int</span> payAmount)</span>{
+        <span class="hljs-built_in">this</span>.billingDate = billingDate  ;
+        <span class="hljs-built_in">this</span>.payAmount   = payAmount    ;
+    }
+
+    <span class="hljs-keyword">public</span> LocalDate <span class="hljs-title function_">getBillingDate</span><span class="hljs-params">()</span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>.billingDate;
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">getPayAmount</span><span class="hljs-params">()</span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>.payAmount;
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Builder <span class="hljs-title function_">builder</span><span class="hljs-params">()</span>{
+        <span class="hljs-keyword">return</span>  <span class="hljs-keyword">new</span> <span class="hljs-title class_">Builder</span>();
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Builder</span>{
+        <span class="hljs-keyword">private</span> <span class="hljs-type">PayData</span> <span class="hljs-variable">data</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">PayData</span>();
+
+        <span class="hljs-keyword">public</span> Builder <span class="hljs-title function_">billingDate</span><span class="hljs-params">(LocalDate billingDate)</span>{
+            data.billingDate = billingDate;
+            <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>;
+        }
+
+        <span class="hljs-keyword">public</span> Builder <span class="hljs-title function_">payAmount</span><span class="hljs-params">(<span class="hljs-type">int</span> payAmount)</span>{
+            data.payAmount = payAmount;
+            <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>;
+        }
+        
+        <span class="hljs-keyword">public</span> PayData <span class="hljs-title function_">build</span><span class="hljs-params">()</span>{
+            <span class="hljs-keyword">return</span> data;
+        }
+    }
+}
+</code></pre>
+<h3 id="test">TEST</h3>
+<pre><code class="language-java"><span class="hljs-keyword">package</span> study.tdd.tdd.chapter03;
+
+<span class="hljs-keyword">import</span> org.junit.jupiter.api.Test;
+
+<span class="hljs-keyword">import</span> java.time.LocalDate;
+
+<span class="hljs-keyword">import</span> <span class="hljs-keyword">static</span> org.junit.jupiter.api.Assertions.assertEquals;
+
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ExpiryDateCalculatorTest</span> {
+
+    <span class="hljs-comment">// ** 중복 제거를 위한 코드</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">assertExpiryDate</span><span class="hljs-params">(PayData payData,LocalDate expectedExpiryDate)</span>{
+        <span class="hljs-type">ExpiryDateCalculator</span> <span class="hljs-variable">cal</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ExpiryDateCalculator</span>();
+        <span class="hljs-type">LocalDate</span> <span class="hljs-variable">realExpiryDate</span> <span class="hljs-operator">=</span> cal.calculateExpiryDate(payData);
+        assertEquals(expectedExpiryDate,realExpiryDate);
+    }
+
+    <span class="hljs-meta">@Test</span>
+    <span class="hljs-keyword">void</span>  <span class="hljs-title function_">pay_TenThousand_ExpiryDate_After_One_Month</span><span class="hljs-params">()</span>{
+        assertExpiryDate(
+                PayData.builder()
+                        .billingDate(LocalDate.of(<span class="hljs-number">2019</span>,<span class="hljs-number">3</span>,<span class="hljs-number">1</span>))
+                        .payAmount(<span class="hljs-number">10_000</span>)
+                        .build(),
+                LocalDate.of(<span class="hljs-number">2019</span>,<span class="hljs-number">4</span>,<span class="hljs-number">1</span>));
+
+        assertExpiryDate(
+                PayData.builder()
+                        .billingDate(LocalDate.of(<span class="hljs-number">2019</span>,<span class="hljs-number">5</span>,<span class="hljs-number">5</span>))
+                        .payAmount(<span class="hljs-number">10_000</span>)
+                        .build(),
+                LocalDate.of(<span class="hljs-number">2019</span>,<span class="hljs-number">6</span>,<span class="hljs-number">5</span>));
+    }
+
+    <span class="hljs-meta">@Test</span>
+    <span class="hljs-keyword">void</span> <span class="hljs-title function_">pay_date_isNotSame_with_AfterMonth_ExpiryDate</span><span class="hljs-params">()</span>{
+        assertExpiryDate(
+                PayData.builder()
+                        .billingDate(LocalDate.of(<span class="hljs-number">2019</span>,<span class="hljs-number">1</span>,<span class="hljs-number">31</span>))
+                        .payAmount(<span class="hljs-number">10_000</span>)
+                        .build(),
+                LocalDate.of(<span class="hljs-number">2019</span>,<span class="hljs-number">2</span>,<span class="hljs-number">28</span>));
+
+        assertExpiryDate(
+                PayData.builder()
+                        .billingDate(LocalDate.of(<span class="hljs-number">2019</span>,<span class="hljs-number">5</span>,<span class="hljs-number">31</span>))
+                        .payAmount(<span class="hljs-number">10_000</span>)
+                        .build(),
+                LocalDate.of(<span class="hljs-number">2019</span>,<span class="hljs-number">6</span>,<span class="hljs-number">30</span>));
+    }
+}
+</code></pre>
+<h3 id="main-method">Main Method</h3>
+<pre><code class="language-java"><span class="hljs-keyword">package</span> study.tdd.tdd.chapter03;
+
+<span class="hljs-keyword">import</span> java.time.LocalDate;
+
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ExpiryDateCalculator</span> {
+
+    <span class="hljs-keyword">public</span> LocalDate <span class="hljs-title function_">calculateExpiryDate</span><span class="hljs-params">(LocalDate billingDate,<span class="hljs-type">int</span> payAmount)</span>{
+        <span class="hljs-comment">// ** 구현 코드를 일반화</span>
+        <span class="hljs-keyword">return</span> billingDate.plusMonths(<span class="hljs-number">1</span>);
+    }
+
+    <span class="hljs-keyword">public</span> LocalDate <span class="hljs-title function_">calculateExpiryDate</span><span class="hljs-params">(PayData payData)</span>{
+        <span class="hljs-keyword">return</span> payData.getBillingDate().plusMonths(<span class="hljs-number">1</span>);
+    }
+}
+</code></pre>
+<h2 id="7-예외-상황-테스트-진행">7. 예외 상황 테스트 진행</h2>
+<ul>
+<li>첫 납부일 기준으로 만료일 을 계산해야한다.</li>
+<li>Builder Pattern 으로 작성한 Object 에 필드 추가하여 진행</li>
+</ul>
+<pre><code class="language-java"><span class="hljs-keyword">package</span> study.tdd.tdd.chapter03;
+
+<span class="hljs-keyword">import</span> java.time.LocalDate;
+
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">PayData</span> {
+
+    <span class="hljs-keyword">private</span> LocalDate firstBillingDate;
+    <span class="hljs-keyword">private</span> LocalDate billingDate;
+
+    <span class="hljs-keyword">private</span> <span class="hljs-type">int</span> payAmount;
+
+    <span class="hljs-keyword">private</span> <span class="hljs-title function_">PayData</span><span class="hljs-params">()</span>{}
+
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">PayData</span><span class="hljs-params">(LocalDate firstBillingDate, LocalDate billingDate, <span class="hljs-type">int</span> payAmount)</span>{
+        <span class="hljs-built_in">this</span>.firstBillingDate    = firstBillingDate   ;
+        <span class="hljs-built_in">this</span>.billingDate        = billingDate       ;
+        <span class="hljs-built_in">this</span>.payAmount          = payAmount         ;
+    }
+
+    <span class="hljs-keyword">public</span> LocalDate <span class="hljs-title function_">getFirstBillingDate</span><span class="hljs-params">()</span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>.firstBillingDate;
+    }
+    <span class="hljs-keyword">public</span> LocalDate <span class="hljs-title function_">getBillingDate</span><span class="hljs-params">()</span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>.billingDate;
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">getPayAmount</span><span class="hljs-params">()</span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>.payAmount;
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Builder <span class="hljs-title function_">builder</span><span class="hljs-params">()</span>{
+        <span class="hljs-keyword">return</span>  <span class="hljs-keyword">new</span> <span class="hljs-title class_">Builder</span>();
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Builder</span>{
+        <span class="hljs-keyword">private</span> <span class="hljs-type">PayData</span> <span class="hljs-variable">data</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">PayData</span>();
+
+        <span class="hljs-keyword">public</span> Builder <span class="hljs-title function_">firstBillingDate</span><span class="hljs-params">(LocalDate firstBillingDate)</span>{
+            data.firstBillingDate = firstBillingDate;
+            <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>;
+        }
+
+        <span class="hljs-keyword">public</span> Builder <span class="hljs-title function_">billingDate</span><span class="hljs-params">(LocalDate billingDate)</span>{
+            data.billingDate = billingDate;
+            <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>;
+        }
+
+        <span class="hljs-keyword">public</span> Builder <span class="hljs-title function_">payAmount</span><span class="hljs-params">(<span class="hljs-type">int</span> payAmount)</span>{
+            data.payAmount = payAmount;
+            <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>;
+        }
+        
+        <span class="hljs-keyword">public</span> PayData <span class="hljs-title function_">build</span><span class="hljs-params">()</span>{
+            <span class="hljs-keyword">return</span> data;
+        }
+    }
+}
+</code></pre>
+<h3 id="테스트-통과를-위한-상수를-사용하여-main-method-수정">테스트 통과를 위한 상수를 사용하여 main method 수정</h3>
+<pre><code class="language-java">    <span class="hljs-keyword">public</span> LocalDate <span class="hljs-title function_">calculateExpiryDate</span><span class="hljs-params">(PayData payData)</span>{
+        <span class="hljs-keyword">if</span>(payData.getFirstBillingDate().equals(LocalDate.of(<span class="hljs-number">2019</span>,<span class="hljs-number">1</span>,<span class="hljs-number">31</span>))){
+            <span class="hljs-keyword">return</span> LocalDate.of(<span class="hljs-number">2019</span>,<span class="hljs-number">3</span>,<span class="hljs-number">31</span>);
+        }
+        <span class="hljs-keyword">return</span> payData.getBillingDate().plusMonths(<span class="hljs-number">1</span>);
+    }
+</code></pre>
+<ul>
+<li>다른 method 에서 NPE 발생
+<img src="file:////Users/maxxing/Documents/GIT-HUB/STUDY_JAVA/STUDY_JAVA/TDD/HangHae_Pre_Study/recording/chapter03/image-3.png" alt="alt text"></li>
+</ul>
+<blockquote>
+<p>이를 해결하기 위해 NULL 검사 코드 추가 , 역시 아직 일반화가 아니라 상수로 해결</p>
+</blockquote>
+<pre><code class="language-java">    <span class="hljs-keyword">package</span> study.tdd.tdd.chapter03;
+
+    <span class="hljs-keyword">import</span> java.time.LocalDate;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ExpiryDateCalculator</span> {
+
+        <span class="hljs-keyword">public</span> LocalDate <span class="hljs-title function_">calculateExpiryDate</span><span class="hljs-params">(PayData payData)</span>{
+            <span class="hljs-keyword">if</span>(payData.getFirstBillingDate() != <span class="hljs-literal">null</span>){
+                <span class="hljs-keyword">if</span>(payData.getFirstBillingDate().equals(LocalDate.of(<span class="hljs-number">2019</span>,<span class="hljs-number">1</span>,<span class="hljs-number">31</span>))){
+                    <span class="hljs-keyword">return</span> LocalDate.of(<span class="hljs-number">2019</span>,<span class="hljs-number">3</span>,<span class="hljs-number">31</span>);
+                }
+            }
+            <span class="hljs-keyword">return</span> payData.getBillingDate().plusMonths(<span class="hljs-number">1</span>);
+        }
+    }
+
+</code></pre>
+<ul>
+<li>일반화 하여 수정</li>
+</ul>
+<pre><code class="language-java"><span class="hljs-keyword">package</span> study.tdd.tdd.chapter03;
+
+<span class="hljs-keyword">import</span> java.time.LocalDate;
+
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ExpiryDateCalculator</span> {
+
+    <span class="hljs-keyword">public</span> LocalDate <span class="hljs-title function_">calculateExpiryDate</span><span class="hljs-params">(PayData payData)</span>{
+        <span class="hljs-type">int</span> <span class="hljs-variable">addMonths</span> <span class="hljs-operator">=</span> <span class="hljs-number">1</span>;
+
+        <span class="hljs-keyword">if</span>(payData.getFirstBillingDate() != <span class="hljs-literal">null</span>){
+            <span class="hljs-type">LocalDate</span> <span class="hljs-variable">candidateExp</span> <span class="hljs-operator">=</span> payData.getBillingDate().plusMonths(addMonths);
+            
+            <span class="hljs-comment">// ** 현재 달의 마지막 날과 다음 달의 마지막 달을 비교하여 </span>
+            <span class="hljs-comment">// ** 두 날이 다르다면 이전 달의 마지막 날을 다음달의 마지막으로 설정</span>
+            <span class="hljs-keyword">if</span>(payData.getFirstBillingDate().getDayOfMonth() != candidateExp.getDayOfMonth()){
+                <span class="hljs-keyword">return</span> candidateExp.withDayOfMonth(
+                        payData.getFirstBillingDate().getDayOfMonth()
+                );
+            }
+            
+        }
+        <span class="hljs-keyword">return</span> payData.getBillingDate().plusMonths(addMonths);
+    }
+}
+</code></pre>
+<h2 id="8-tnldns-xptmxm">8. tnldns xptmxm</h2>
+<ol>
+<li>2만원 지불 시 만료일이 두달 뒤</li>
+<li>3만원 지불 시 만료일이 석달 뒤</li>
+</ol>
+<blockquote>
+<p>TEST Method 를 통해 돈을 지불하고 그 지불한 금액에 비례하여
+납부 개월 수를 증가 시킴</p>
+</blockquote>
+<pre><code class="language-java"><span class="hljs-keyword">package</span> study.tdd.tdd.chapter03;
+
+<span class="hljs-keyword">import</span> java.time.LocalDate;
+
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ExpiryDateCalculator</span> {
+
+    <span class="hljs-keyword">public</span> LocalDate <span class="hljs-title function_">calculateExpiryDate</span><span class="hljs-params">(PayData payData)</span>{
+        <span class="hljs-type">int</span> <span class="hljs-variable">addedMonths</span> <span class="hljs-operator">=</span> payData.getPayAmount()/ <span class="hljs-number">10_000</span>;
+        <span class="hljs-keyword">if</span>(payData.getFirstBillingDate() != <span class="hljs-literal">null</span>){
+            <span class="hljs-type">LocalDate</span> <span class="hljs-variable">candidateExp</span> <span class="hljs-operator">=</span> payData.getBillingDate().plusMonths(addedMonths);
+
+            <span class="hljs-comment">// ** 현재 달의 마지막 날과 다음 달의 마지막 달을 비교하여</span>
+            <span class="hljs-comment">// ** 두 날이 다르다면 이전 달의 마지막 날을 다음달의 마지막으로 설정</span>
+            <span class="hljs-keyword">if</span>(payData.getFirstBillingDate().getDayOfMonth() != candidateExp.getDayOfMonth()){
+                <span class="hljs-keyword">return</span> candidateExp.withDayOfMonth(
+                        payData.getFirstBillingDate().getDayOfMonth()
+                );
+            }
+
+        }
+        <span class="hljs-keyword">return</span> payData.getBillingDate().plusMonths(addedMonths);
+    }
+}
+
+</code></pre>
+<h3 id="납부-테스트-만들기">납부 테스트 만들기</h3>
+<pre><code class="language-java">    <span class="hljs-meta">@Test</span>
+    <span class="hljs-keyword">void</span> <span class="hljs-title function_">payOver_20_000Won_CalculateExpiryDate_From_Money</span><span class="hljs-params">()</span>{
+        assertExpiryDate(
+                PayData.builder()
+                        .billingDate(LocalDate.of(<span class="hljs-number">2019</span>,<span class="hljs-number">3</span>,<span class="hljs-number">1</span>))
+                        .payAmount(<span class="hljs-number">20_000</span>)
+                        .build(),
+                LocalDate.of(<span class="hljs-number">2019</span>,<span class="hljs-number">5</span>,<span class="hljs-number">1</span>));
+
+        assertExpiryDate(
+                PayData.builder()
+                        .billingDate(LocalDate.of(<span class="hljs-number">2019</span>,<span class="hljs-number">3</span>,<span class="hljs-number">1</span>))
+                        .payAmount(<span class="hljs-number">30_000</span>)
+                        .build(),
+                LocalDate.of(<span class="hljs-number">2019</span>,<span class="hljs-number">6</span>,<span class="hljs-number">1</span>));
+    }
+</code></pre>
+<h2 id="9--에외-상황-테스트-추가">9 . 에외 상황 테스트 추가</h2>
+<blockquote>
+<p>첫 납부일과 납부일의 일자가 다를때 2만원 이상 납부한 경우</p>
+</blockquote>
+<pre><code class="language-java">        <span class="hljs-meta">@Test</span>
+        <span class="hljs-keyword">void</span> <span class="hljs-title function_">payOver_20_000Won_When_firstExpiryMonthDate_IsNotSameWith_thisMonthExpiryDate</span><span class="hljs-params">()</span>{
+            assertExpiryDate(
+                    PayData.builder()
+                            .firstBillingDate(LocalDate.of(<span class="hljs-number">2019</span>,<span class="hljs-number">1</span>,<span class="hljs-number">31</span>))
+                            .billingDate(LocalDate.of(<span class="hljs-number">2019</span>,<span class="hljs-number">2</span>,<span class="hljs-number">28</span>))
+                            .payAmount(<span class="hljs-number">20_000</span>)
+                            .build(), LocalDate.of(<span class="hljs-number">2019</span>,<span class="hljs-number">4</span>,<span class="hljs-number">30</span>));
+        }
+    }
+</code></pre>
+<p><img src="file:////Users/maxxing/Documents/GIT-HUB/STUDY_JAVA/STUDY_JAVA/TDD/HangHae_Pre_Study/recording/chapter03/image-4.png" alt="alt text"></p>
+<ul>
+<li>4월 31을 만든 오류이다.</li>
+</ul>
+<blockquote>
+<p>Method 를 수정 = 후보 만료일이 포함된 달의 마지막날 &lt;&gt;</p>
+</blockquote>
+<pre><code class="language-java"><span class="hljs-keyword">package</span> study.tdd.tdd.chapter03;
+
+<span class="hljs-keyword">import</span> java.time.LocalDate;
+<span class="hljs-keyword">import</span> java.time.YearMonth;
+
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ExpiryDateCalculator</span> {
+
+    <span class="hljs-keyword">public</span> LocalDate <span class="hljs-title function_">calculateExpiryDate</span><span class="hljs-params">(PayData payData)</span>{
+        <span class="hljs-type">int</span> <span class="hljs-variable">addedMonths</span> <span class="hljs-operator">=</span> payData.
+        <span class="hljs-comment">// int addedMonths = payData.getPayAmount()/ 10_000;</span>
+        <span class="hljs-comment">// if(payData.getFirstBillingDate() != null){</span>
+        <span class="hljs-comment">//     LocalDate candidateExp = payData.getBillingDate().plusMonths(addedMonths);</span>
+
+        <span class="hljs-comment">//     if(payData.getFirstBillingDate().getDayOfMonth() != candidateExp.getDayOfMonth()){</span>
+        <span class="hljs-comment">//         // ** 마지막 달의 마지막날                           </span>
+        <span class="hljs-comment">//         if(YearMonth.from(candidateExp).lengthOfMonth() &lt; payData.getFirstBillingDate().getDayOfMonth()){</span>
+        <span class="hljs-comment">//             return candidateExp.withDayOfMonth(YearMonth.from(candidateExp).lengthOfMonth());</span>
+        <span class="hljs-comment">//         }</span>
+        <span class="hljs-comment">//         return candidateExp.withDayOfMonth(</span>
+        <span class="hljs-comment">//                 payData.getFirstBillingDate().getDayOfMonth()</span>
+        <span class="hljs-comment">//         );</span>
+        <span class="hljs-comment">//     }</span>
+
+        <span class="hljs-comment">// }</span>
+        <span class="hljs-keyword">return</span> payData.getBillingDate().plusMonths(addedMonths);
+    }
+}
+</code></pre>
+<h2 id="10-코드-정리">10 코드 정리</h2>
+<pre><code class="language-java"><span class="hljs-keyword">package</span> study.tdd.tdd.chapter03;
+
+<span class="hljs-keyword">import</span> java.time.LocalDate;
+<span class="hljs-keyword">import</span> java.time.YearMonth;
+
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ExpiryDateCalculator</span> {
+
+    <span class="hljs-keyword">public</span> LocalDate <span class="hljs-title function_">calculateExpiryDate</span><span class="hljs-params">(PayData payData)</span>{
+        <span class="hljs-comment">// ** 금액을 나누어서 구독한 개월수를 구함</span>
+        <span class="hljs-type">int</span> <span class="hljs-variable">addedMonths</span> <span class="hljs-operator">=</span> payData.getPayAmount() / <span class="hljs-number">10_000</span>;
+
+        <span class="hljs-comment">// ** 처음 구독한 날짜가 존재하는 경우 -&gt; 만료일을 추가적으로 계산</span>
+        <span class="hljs-keyword">if</span>(payData.getFirstBillingDate() != <span class="hljs-literal">null</span> ) {
+            <span class="hljs-keyword">return</span> expiryDateUsingFirstBillingDate(payData,addedMonths);
+        }
+        <span class="hljs-comment">// ** 처음 구독한 날짜가 존재하지 않는 경우</span>
+        <span class="hljs-keyword">else</span>{
+            <span class="hljs-keyword">return</span> payData.getBillingDate().plusMonths(addedMonths);
+        }
+    }
+
+    <span class="hljs-keyword">public</span> LocalDate <span class="hljs-title function_">expiryDateUsingFirstBillingDate</span><span class="hljs-params">(PayData payData,<span class="hljs-type">int</span> addedMonths)</span>{
+        
+        <span class="hljs-type">LocalDate</span> <span class="hljs-variable">candidateExp</span> <span class="hljs-operator">=</span> payData.getBillingDate().plusMonths(addedMonths);
+
+        <span class="hljs-comment">// ** 처음 구독한 달의 마지막 날</span>
+        <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> <span class="hljs-variable">dayOffFistBilling</span> <span class="hljs-operator">=</span> payData.getFirstBillingDate().getDayOfMonth();
+
+        <span class="hljs-comment">// ** 처음 구독한 달과 만료 달의 마지막 날이 다를 경우 </span>
+        <span class="hljs-keyword">if</span>(dayOffFistBilling != candidateExp.getDayOfMonth()){
+            <span class="hljs-comment">// ** 구독 만료하는 달의 마지막 날 수 </span>
+            <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> <span class="hljs-variable">dayLenOfCandiMon</span> <span class="hljs-operator">=</span> YearMonth.from(candidateExp).lengthOfMonth();
+            
+            <span class="hljs-comment">// ** 처음 구독한 날과 만료하는 달의 날 중 적은 달을 반환 </span>
+            <span class="hljs-keyword">if</span>(dayLenOfCandiMon &lt; dayOffFistBilling ){
+                <span class="hljs-keyword">return</span> candidateExp.withDayOfMonth(dayLenOfCandiMon);
+            }
+            <span class="hljs-keyword">return</span> candidateExp.withDayOfMonth(dayOffFistBilling);
+        }
+        <span class="hljs-keyword">else</span>{
+            <span class="hljs-keyword">return</span> candidateExp;
+        }
+    }
+}
+</code></pre>
+<h2 id="10-개월-요금-납부-시-1년-제공">10 개월 요금 납부 시 1년 제공</h2>
+<ul>
+<li>테스트 코드 추가</li>
+</ul>
+<pre><code class="language-java">    <span class="hljs-meta">@Test</span>
+    <span class="hljs-keyword">void</span> <span class="hljs-title function_">pay100_000Won_Subscribe_OneYear</span><span class="hljs-params">()</span>{
+        assertExpiryDate(
+                PayData.builder()
+                        .billingDate(LocalDate.of(<span class="hljs-number">2019</span>,<span class="hljs-number">1</span>,<span class="hljs-number">28</span>))
+                        .payAmount(<span class="hljs-number">100_000</span>)
+                        .build(),
+                LocalDate.of(<span class="hljs-number">2020</span>,<span class="hljs-number">1</span>,<span class="hljs-number">28</span>));
+    }
+</code></pre>
+<p><img src="file:////Users/maxxing/Documents/GIT-HUB/STUDY_JAVA/STUDY_JAVA/TDD/HangHae_Pre_Study/recording/chapter03/image-5.png" alt="alt text"></p>
+<ul>
+<li>날짜가 안맞는 것을 확인할 수 있다.</li>
+</ul>
+<h3 id="해결하기-위한-코드">해결하기 위한 코드</h3>
+<pre><code class="language-java"><span class="hljs-keyword">package</span> study.tdd.tdd.chapter03;
+
+<span class="hljs-keyword">import</span> java.time.LocalDate;
+<span class="hljs-keyword">import</span> java.time.YearMonth;
+
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ExpiryDateCalculator</span> {
+
+    <span class="hljs-keyword">public</span> LocalDate <span class="hljs-title function_">calculateExpiryDate</span><span class="hljs-params">(PayData payData)</span>{
+        <span class="hljs-comment">// ** 금액을 나누어서 구독한 개월수를 구함</span>
+        <span class="hljs-type">int</span> <span class="hljs-variable">addedMonths</span> <span class="hljs-operator">=</span> payData.getPayAmount() == <span class="hljs-number">100_000</span> ? <span class="hljs-number">12</span> : payData.getPayAmount() / <span class="hljs-number">10_000</span>;
+
+        <span class="hljs-comment">// ** 처음 구독한 날짜가 존재하는 경우 -&gt; 만료일을 추가적으로 계산</span>
+        <span class="hljs-keyword">if</span>(payData.getFirstBillingDate() != <span class="hljs-literal">null</span> ) {
+            <span class="hljs-keyword">return</span> expiryDateUsingFirstBillingDate(payData,addedMonths);
+        }
+        <span class="hljs-comment">// ** 처음 구독한 날짜가 존재하지 않는 경우</span>
+        <span class="hljs-keyword">else</span>{
+            <span class="hljs-keyword">return</span> payData.getBillingDate().plusMonths(addedMonths);
+        }
+    }
+
+    <span class="hljs-keyword">public</span> LocalDate <span class="hljs-title function_">expiryDateUsingFirstBillingDate</span><span class="hljs-params">(PayData payData,<span class="hljs-type">int</span> addedMonths)</span>{
+
+        <span class="hljs-type">LocalDate</span> <span class="hljs-variable">candidateExp</span> <span class="hljs-operator">=</span> payData.getBillingDate().plusMonths(addedMonths);
+
+        <span class="hljs-comment">// ** 처음 구독한 달의 마지막 날</span>
+        <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> <span class="hljs-variable">dayOffFistBilling</span> <span class="hljs-operator">=</span> payData.getFirstBillingDate().getDayOfMonth();
+
+        <span class="hljs-comment">// ** 처음 구독한 달과 만료 달의 마지막 날이 다를 경우</span>
+        <span class="hljs-keyword">if</span>(dayOffFistBilling != candidateExp.getDayOfMonth()){
+            <span class="hljs-comment">// ** 구독 만료하는 달의 마지막 날 수</span>
+            <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> <span class="hljs-variable">dayLenOfCandiMon</span> <span class="hljs-operator">=</span> YearMonth.from(candidateExp).lengthOfMonth();
+
+            <span class="hljs-comment">// ** 처음 구독한 날과 만료하는 달의 날 중 적은 달을 반환</span>
+            <span class="hljs-keyword">if</span>(dayLenOfCandiMon &lt; dayOffFistBilling ){
+                <span class="hljs-keyword">return</span> candidateExp.withDayOfMonth(dayLenOfCandiMon);
+            }
+            <span class="hljs-keyword">return</span> candidateExp.withDayOfMonth(dayOffFistBilling);
+        }
+        <span class="hljs-keyword">else</span>{
+            <span class="hljs-keyword">return</span> candidateExp;
+        }
+    }
+}
+
+</code></pre>
+<h2 id="테스트-할-목록-정리하기">테스트 할 목록 정리하기</h2>
+<ul>
+<li>미리 목록을 만들어 두는 것도 좋은 방법이다.
+<ol>
+<li>1만원 납부하면 한달 뒤가 만료일</li>
+<li>달의 마지막 날에 납부하면 다음달 마지막 날이 만료일</li>
+<li>2만원 납부하면 2개월 뒤가 만료일</li>
+<li>3만원 납부하면 3개월 뒤가 만료일</li>
+<li>10만원을 납부하면 1년뒤가 만료일</li>
+</ol>
+</li>
+</ul>
+<blockquote>
+<p>여기서 어떤 테스트가 구현이 쉬울지 생각하기
+여기서 어떤 테스트가 예외적인지 생각해보기</p>
+</blockquote>
+<ul>
+<li>새로운 테스트 사례를 발견</li>
+</ul>
+<blockquote>
+<p>새로운 테스트 사례를 추가하여 진행하기
+( 처음 부터 모든 사례를 정리하려면 시간도 오래 걸릴 뿐더러 쉽지도 않다.)</p>
+</blockquote>
+<ul>
+<li>테스트 목록을 적었다고 테스트를 한번에 다 작성하면 안된다.</li>
+</ul>
+<blockquote>
+<p>한번에 작성한 테스트코드가 많으면 구현 초기에
+리팩토링이 자유롭지 못하다.</p>
+<p>모든 테스트를 통과시키기 전까지
+계속해서 깨지는 테스트가 존재하므로 개발 리듬을
+유지하는 데 도움이 안된다.</p>
+<p>하나의 테스트 코드를 만들고
+통과 시키고
+리팩토링 하고
+다음 테스트</p>
+<p>해당 구조를 반복하는 것이
+짧은 리듬을 반복하고 개발주기가 짧아져서
+집중력도 높아진다.</p>
+</blockquote>
+<ul>
+<li>변경 범위가 매우 큰 리팩토링을 발견하는 경우</li>
+</ul>
+<blockquote>
+<p>시간이 오래 거리므로 TDD 흐름을 깨기 쉽다.
+이때는 테스트를 하는데 집중한다.</p>
+<p>대신 다음 할일 목록에 추가해서 진행한다.</p>
+<p>( 큰 리팩토링을 발견했을 때 반드시 커밋해놓기 )</p>
+</blockquote>
+<h2 id="시작하기-힘들때">시작하기 힘들때</h2>
+<ul>
+<li>검증하는 코드부터 작성</li>
+</ul>
+<blockquote>
+<p>예를 들어 만료일 계산 기능의 경우
+만료일을 검증하는 코드부터 작성</p>
+</blockquote>
+<pre><code class="language-java">    <span class="hljs-meta">@Test</span>
+    <span class="hljs-keyword">void</span> <span class="hljs-title function_">pay10_000_then_expiryDate_OneMonthLater</span><span class="hljs-params">()</span>{
+        <span class="hljs-comment">// 처음 작성하는 코드 </span>
+        assertEquals(기대하는 만료일, 실제 만료일 )
+    }
+</code></pre>
+<h2 id="구현이-막히면">구현이 막히면</h2>
+<ul>
+<li>과감하게 코드를 지우고 미련없이 다시 시작한다.
+<blockquote>
+<p>어떤 순서로 작성했는지 확인해보고 순서를 바꿔서 다시 진행</p>
+</blockquote>
+</li>
+</ul>
+
+            
+            
+        </body>
+        </html>
