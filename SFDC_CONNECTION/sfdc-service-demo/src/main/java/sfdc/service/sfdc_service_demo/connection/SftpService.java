@@ -61,8 +61,6 @@ class SftpService {
     }
 
 
-
-
     // description : create Sftp Session
     private Session createSession(SftpCredentials credentials) throws JSchException {
         JSch jSchObj = new JSch();
