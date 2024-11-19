@@ -196,7 +196,7 @@ public class SftpUploadTest {
     void upload_upload(){
         MultipartFile       file            = createTestMultiPartFile("image/png","test.png");
         SftpCredentials     credentials    = credentials();
-        String              filePath        = new SftpService().upload(credentials,"",file);
+        String              filePath        = new SftpService().upload(credentials,"/upload",file);
         try{
             System.out.println("filePath : "+filePath);
             UUID.fromString(filePath.replace("/","").replace(".png",""));

@@ -94,17 +94,13 @@ public class SftpService {
         if(!isValidType(Objects.requireNonNull(file.getContentType()),extension))
             throw new CustomSftpException(SFTP_STATUS.ONLY_IMAGE);
 
-
         ChannelSftp channel = createChannel(credentials);
 
         // ** Sanitized Path
         String sanitizedPath = generateSanitizedPath(path);
 
-        if( !isValidPath(channel,sanitizedPath) ) throw new CustomSftpException(SFTP_STATUS.NOT_VALID_PATH);
-
 
         String newFilePath = generateNewFilePath(sanitizedPath,file.getOriginalFilename(),extension);
-
         // ** upload
         try(InputStream inputStream = file.getInputStream()){
             channel.put(inputStream,newFilePath);
@@ -149,7 +145,7 @@ public class SftpService {
         if(!hasText(extension)) throw new CustomSftpException(SFTP_STATUS.NOT_ALLOW_FILE_TYPE);
         String newFileName = UUID.randomUUID()+"."+extension;
 
-        return path+newFileName;
+        return path+"/"+newFileName;
     }
     private boolean isValidType(String contentType,String extensionName) {
 
@@ -158,10 +154,12 @@ public class SftpService {
     }
     private boolean isValidPath(ChannelSftp channel, String path){
         try{
+
             channel.ls(path);
             return true;
         }
         catch (SftpException e){
+            System.out.println("SFTP Exception : "+e.getLocalizedMessage());
             return false;
         }
     }
@@ -179,6 +177,24 @@ public class SftpService {
         if(session!=null&&session.isConnected()){
             session.disconnect();
             sessionHolder.remove();
+        }
+    }
+
+    public InputStream download(SftpCredentials credentials,String source) {
+        // ** Conn ect with Sftp Server
+        ChannelSftp channelSftp =  createChannel(credentials);
+
+        // ** check file exist
+        if(isValidPath(channelSftp,source)){
+            try{
+                return channelSftp.get(source);
+            }
+            catch (SftpException sftpException){
+                throw new CustomSftpException(SFTP_STATUS.SFTP_ERROR,sftpException.getLocalizedMessage());
+            }
+        }
+        else{
+            throw new CustomSftpException(SFTP_STATUS.NOT_FOUND_FILE);
         }
     }
 }

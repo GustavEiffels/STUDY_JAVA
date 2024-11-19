@@ -27,7 +27,7 @@ public class SftpConnectionTest {
     @Test
     void sftp_justConnectionTest() {
         // ** 입력 깂이 4개 이상임으로 객체로 만드는 거 고려해보기
-        SFTP_STATUS conn_status = common_connectTest("localhost",8080,"user","psdfasfds");
+        SFTP_STATUS conn_status = common_connectTest("localhost",2222,"xiuk","ppppp");
         assertEquals(conn_status,SFTP_STATUS.CONNECT);
     }
 
