@@ -9,7 +9,6 @@ import org.springframework.util.Assert;
 @Getter
 @Setter
 @Builder
-@Component
 public class SftpCredentials {
     private String host;
     private int port;

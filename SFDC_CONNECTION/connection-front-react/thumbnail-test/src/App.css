@@ -1,0 +1,95 @@
+.outlayer{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.wrapper{
+  width: 2048px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 50px;
+}
+
+
+.imageLoadList{
+  width: 1280px;
+  height: 700px;
+  border: 4px solid black;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  gap: 30px;
+}
+
+.imageLoadList .item{
+  width: 40%;
+  height: 90%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 4px solid black;
+  border-radius: 10px;
+}
+
+.imageLoadList .item label{
+  width: 40%;
+  font-size: 2rem;
+  text-align: center;
+}
+
+button{
+  width: 50%;
+  height: 50px;
+  border-radius: 10px;
+  background-color: rgba(0, 0,0,0);
+  transition: ease-in-out 0.4s;
+  font-size: 1.5rem;
+}
+
+button:hover{
+  color: white;
+  background-color: grey;
+}
+
+.uploadArea{
+  width: 1000px;
+  height: 300px;
+  border: 4px solid black;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 50px;
+}
+
+.uploadArea label{
+  width: 30%;
+  height: 20%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  background-color: grey;
+  color: white;
+  cursor: pointer;
+}
+
+.uploadArea label.selectedFile{
+  background-color: white;
+  color: black;
+}
+
+
+
+
+.uploadArea input{
+  display: none;
+}
