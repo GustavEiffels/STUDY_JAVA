@@ -99,7 +99,7 @@ public class SftpUploadTest {
             assertNotNull(filePath);
         });
 
-        Assertions.assertEquals(SFTP_STATUS.NOT_FOUND_FILE,exception.getStatus());
+        Assertions.assertEquals(SFTP_STATUS.NOT_AVAILABLE_PATH,exception.getStatus());
     }
 
 

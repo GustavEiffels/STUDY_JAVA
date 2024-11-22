@@ -75,6 +75,6 @@ public class SftpDownloadingTest {
             InputStream fileInputStream = sftpService.download(credentials,"/test");
         });
 
-        assertEquals(exception.getStatus(), SFTP_STATUS.NOT_FOUND_FILE);
+        assertEquals(exception.getStatus(), SFTP_STATUS.NOT_AVAILABLE_PATH);
     }
 }

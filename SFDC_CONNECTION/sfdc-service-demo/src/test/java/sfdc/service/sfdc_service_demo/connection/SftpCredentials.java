@@ -1,12 +1,15 @@
 package sfdc.service.sfdc_service_demo.connection;
 
+import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
+
 
 public class SftpCredentials {
     private String host;
     private int port;
     private String username;
     private String password;
+
 
     public SftpCredentials(String host, int port, String username, String password) {
         Assert.hasText(host, "host 는 필수 값입니다.");
