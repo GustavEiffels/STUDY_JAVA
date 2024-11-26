@@ -7,7 +7,6 @@ public class CustomSftpException extends RuntimeException {
     public CustomSftpException(SFTP_STATUS status, String message) {
         super(message);
         this.status = status;
-
     }
 
 

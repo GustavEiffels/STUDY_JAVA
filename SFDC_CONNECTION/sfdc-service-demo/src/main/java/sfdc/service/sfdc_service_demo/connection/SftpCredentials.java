@@ -16,12 +16,20 @@ public class SftpCredentials {
     private String password;
 
     public SftpCredentials(String host, int port, String username, String password) {
-        Assert.hasText(host, "host 는 필수 값입니다.");
         Assert.notNull(host, "host 는 필수 값입니다.");
         Assert.isInstanceOf(Integer.class, port, "port 는 숫자 값입니다.");
         this.host = host;
         this.port = port;
         this.username = username;
         this.password = password;
+    }
+
+    public SftpCredentials(SftpConnectionProperties properties) {
+        Assert.hasText(properties.getHost(), "host 는 필수 값입니다.");
+        Assert.isInstanceOf(Integer.class, properties.getPort(), "port 는 숫자 값입니다.");
+        this.host = properties.getHost();
+        this.port = properties.getPort();
+        this.username = properties.getUser();
+        this.password = properties.getPassword();
     }
 }

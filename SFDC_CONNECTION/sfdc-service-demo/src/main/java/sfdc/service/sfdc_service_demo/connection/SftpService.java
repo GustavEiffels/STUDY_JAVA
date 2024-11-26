@@ -1,20 +1,22 @@
 package sfdc.service.sfdc_service_demo.connection;
 
 import com.jcraft.jsch.*;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Objects;
 import java.util.Properties;
 import java.util.UUID;
 
 import static org.springframework.util.StringUtils.hasText;
 
 @Service
+@Slf4j
+@RequiredArgsConstructor
 class SftpService {
-
+    private final SftpConnectionProperties properties;
     private final ThreadLocal<Session>      sessionHolder = new ThreadLocal<>();
     private final ThreadLocal<ChannelSftp>  channelHolder = new ThreadLocal<>();
 
@@ -60,7 +62,6 @@ class SftpService {
         return channel;
     }
 
-
     // description : create Sftp Session
     private Session createSession(SftpCredentials credentials) throws JSchException {
         JSch jSchObj = new JSch();
@@ -68,9 +69,9 @@ class SftpService {
         // ** Session 초기 생성
         Session sftpSession = jSchObj.getSession(credentials.getUsername(), credentials.getHost());
 
-        if (credentials.getPort() > 0) sftpSession.setPort(credentials.getPort());             // ** Port 가 존재하면 port 설정
+        if (credentials.getPort() > 0) sftpSession.setPort(credentials.getPort());       // ** Port 가 존재하면 port 설정
         if (hasText(credentials.getPassword()))
-            sftpSession.setPassword(credentials.getPassword());     // ** Password 존재하면 password 설정
+            sftpSession.setPassword(credentials.getPassword());                          // ** Password 존재하면 password 설정
 
         // ** Session Properties 설정
         Properties properties = new Properties();
@@ -82,10 +83,9 @@ class SftpService {
         return sftpSession;
     }
 
-
     // description: disconnect sftp session, channel
     private void disconnect(){
-        Session session = sessionHolder.get();
+        Session     session = sessionHolder.get();
         ChannelSftp channel = channelHolder.get();
 
         if(channel!=null&&channel.isConnected()){
@@ -107,18 +107,17 @@ class SftpService {
      *  4. upload
      *  5. 새로운 경로 반환
      *
-     * @param credentials
      * @param path
      * @param file
      * @return
      */
-    public String upload(SftpCredentials credentials, String path, MultipartFile file) {
+    public String upload(String path, MultipartFile file) {
 
         // ** 파일 정보 확인
         SftpFileInfo fileInfo   = extractFileInfo(file);
 
         // ** SFTP 채널 생성
-        ChannelSftp channel     = createChannel( (credentials!=null) ? credentials : new SftpConnectionProperties().connection());
+        ChannelSftp channel     = createChannel( new SftpCredentials(properties));
 
         // ** 새로운 파일 경로 생성
         String newFilePath      = generateFilePath(channel,path,fileInfo.getExtension());
@@ -211,10 +210,9 @@ class SftpService {
         }
 
     // description: disconnect sftp session, channel
-
-    public InputStream download(SftpCredentials credentials,String source) {
+    public InputStream download(String source) {
         // ** Conn ect with Sftp Server
-        ChannelSftp channelSftp =  createChannel( (credentials!=null) ? credentials : new SftpConnectionProperties().connection());
+        ChannelSftp channelSftp =  createChannel( new SftpCredentials(properties) );
 
         // ** check file exist
         if(isValidPath(channelSftp,source)){
@@ -229,4 +227,5 @@ class SftpService {
             throw new CustomSftpException(SFTP_STATUS.NOT_AVAILABLE_PATH);
         }
     }
+
 }

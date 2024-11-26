@@ -3,23 +3,30 @@ import './App.css';
 
 function App() {
 
-  const [loadImage, setLoadImage]               = useState(null)
+  const [loadImage     , setLoadImage]          = useState(null)
   const [fileStateLabel, setFileStateLabel]     = useState('파일 올리기')
   const [selectedFile  , setSelectedFile]       = useState(null)
-  const [thumbnail, setThumbnail]               = useState(null);
+  const [thumbnail     , setThumbnail]          = useState(null)
+  const [path          , setPath]               = useState(null)
+  const [inputValue    , setInputValue]         = useState(null)
 
 
   const onLoadImage = async () => {
     try {
+      console.log('inputValue : ',inputValue)
       const response = await fetch("http://localhost:8080/download", {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json", // JSON 데이터를 보내기 위한 Content-Type 설정
+        },
+        body: JSON.stringify({ path: inputValue }),
       });
   
       if (!response.ok) {
         throw new Error("Failed to download image");
       }
   
-      const blob = await response.blob(); // Convert the response to a Blob
+      const blob     = await response.blob(); // Convert the response to a Blob
       const imageUrl = URL.createObjectURL(blob); // Create an object URL
       setLoadImage(imageUrl); // Set the URL to the state
   
@@ -29,9 +36,9 @@ function App() {
   
       img.onload = () => {
         const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d");
+        const ctx    = canvas.getContext("2d");
   
-        const MAX_WIDTH = 100; // Thumbnail width
+        const MAX_WIDTH = 100;  // Thumbnail width
         const MAX_HEIGHT = 100; // Thumbnail height
   
         let width = img.width;
@@ -74,11 +81,15 @@ function App() {
       method: "POST",
       body: formData, // FormData를 요청 본문으로 설정
       credentials: "include", // allowCredentials 지원
-    });
-
-    console.log('response.text : '+response)
+    })
+    
+    response.json().then(res=>{
+      console.log(res)
+      console.log('res.path : ',res.path)
+      setPath(res.path)
+      setInputValue(res.path)
+    })
   }
-
 
 
   const onChangeFileSelected = (e)=>{
@@ -98,7 +109,6 @@ function App() {
           <input id='fileInput' type='file' onChange={onChangeFileSelected}></input>
           <button onClick={uploadClick}> Upload </button>
         </div>
-        
         <div className='imageLoadList'>
           <div className='item'>
             <label>일반 사진 로드</label>
@@ -109,6 +119,11 @@ function App() {
             <img src={thumbnail} alt="Loaded" /> 
 
           </div>
+        </div>
+        <div className='inputter'>
+          <label>Load Image Path</label>
+          <input value={inputValue}></input>
+
         </div>
         <button onClick={onLoadImage}>Load Image Button</button>
       </div>
